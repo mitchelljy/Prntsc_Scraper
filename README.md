@@ -6,6 +6,11 @@ downloadable sharing utility activated by pressing the PrtScn key. It's a very u
 based on a sequential 6 digit code, meaning the 1.3 billion or so images uploaded there can be indexed programmatically quite easily. 
 That is what this utility does.
 
+## Pre-downloaded Dataset
+
+I have already published a set of around 13,000 images downloaded from the site [on Kaggle](https://www.kaggle.com/datasnaek/lightshot/home)
+which may be of use if you do not want to use the scraper utility.
+
 ## Pre-requisites
 
 This script was tested on the following python modules, however earlier/later versions may work fine:

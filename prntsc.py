@@ -4,13 +4,16 @@ import string
 import argparse as parser
 import os
 
-# Standard headers to prevent problems while scraping. May not all be necessary, they are
-# copied from what my browser sent to the page.
+import faker
+# Standard headers to prevent problems while scraping. They are necessary  
+# randomly generated using the faker library
+fake = faker.Faker()
+fake.add_provider(faker.providers.user_agent)
 headers = {
     'authority': 'prnt.sc',
     'cache-control': 'max-age=0',
     'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36',
+    'user-agent': fake.chrome(),
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'accept-encoding': 'gzip, deflate',
     'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8'
@@ -57,7 +60,7 @@ def get_img_url(code):
 
 # Saves image from URL
 def get_img(url, path):
-    response = requests.get(url)
+    response = requests.get(url , headers=headers)
     if response.status_code == 200:
         with open(f"{path}.png", 'wb') as f:
             f.write(response.content)

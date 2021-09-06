@@ -1,11 +1,12 @@
-import requests
-from bs4 import BeautifulSoup
-import string
 import argparse as parser
+import mimetypes
+import string
 from pathlib import Path
 
 import faker
-import mimetypes
+import requests
+from bs4 import BeautifulSoup
+
 # Standard headers to prevent problems while scraping. They are necessary  
 # randomly generated using the faker library
 fake = faker.Faker()

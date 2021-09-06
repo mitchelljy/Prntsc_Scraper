@@ -2,9 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import string
 import argparse as parser
-import os
+from pathlib import Path
 
 import faker
+import mimetypes
 # Standard headers to prevent problems while scraping. They are necessary  
 # randomly generated using the faker library
 fake = faker.Faker()
@@ -59,11 +60,12 @@ def get_img_url(code):
 
 
 # Saves image from URL
-def get_img(url, path):
-    response = requests.get(url , headers=headers)
-    if response.status_code == 200:
-        with open(f"{path}.png", 'wb') as f:
-            f.write(response.content)
+def get_img(path):
+    response = requests.get(get_img_url(path.stem), headers=headers)
+    response.raise_for_status()
+    mimetypes.guess_extension(response.headers["content-type"])
+    with open(path.with_suffix(), 'wb') as f:
+        f.write(response.content)
 
 
 if __name__ == '__main__':
@@ -77,20 +79,15 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if not os.path.exists(args.output_path):
-        os.makedirs(args.output_path)
-
+    output_path = Path(args.output_path)
+    output_path.mkdir(exist_ok=True)
     code = args.start_code
     for i in range(int(args.count)):
         code = next_code(code)
         try:
-            url = get_img_url(code)
-            get_img(url, args.output_path + f"/{code}")
+            get_img(output_path.joinpath(code))
             print(f"Saved image number {i}/{args.count} with code: {code}")
-        except:
-            print(f"Error with image: {code}")
-
-
-
-
-
+        except KeyboardInterrupt:
+            break
+        except Exception as e:
+            print(f"{e} with image: {code}")

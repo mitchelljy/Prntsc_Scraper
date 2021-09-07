@@ -7,7 +7,9 @@ import faker
 import requests
 from bs4 import BeautifulSoup
 
-# Standard headers to prevent problems while scraping. They are necessary  
+mimetypes.add_type("image/webp", ".webp")
+
+# Standard headers to prevent problems while scraping. They are necessary
 # randomly generated using the faker library
 fake = faker.Faker()
 fake.add_provider(faker.providers.user_agent)
@@ -25,10 +27,13 @@ headers = {
 # The idea is that we can work in base 36 (length of all lowercase + digits) to add
 # one to a code i.e. if we have abcdef, we can essentially write abcdef + 1 to get
 # abcdeg, which is the next code.
-code_chars = list(string.ascii_lowercase) + ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+code_chars = list(string.ascii_lowercase) + \
+    ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 base = len(code_chars)
 
 # Converts digit to a letter based on character codes
+
+
 def digit_to_char(digit):
     if digit < 10:
         return str(digit)
@@ -64,8 +69,7 @@ def get_img_url(code):
 def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
     response.raise_for_status()
-    mimetypes.guess_extension(response.headers["content-type"])
-    with open(path.with_suffix(), 'wb') as f:
+    with open(path.with_suffix(mimetypes.guess_extension(response.headers["content-type"])), 'wb') as f:
         f.write(response.content)
 
 
@@ -74,9 +78,11 @@ if __name__ == '__main__':
     parser = parser.ArgumentParser()
     parser.add_argument('--start_code', help='6 character string made up of lowercase letters and numbers which is '
                                              'where the scraper will start. e.g. abcdef -> abcdeg -> abcdeh',
-                                        default='lj9me9')
-    parser.add_argument('--count', help='The number of images to scrape.', default='200')
-    parser.add_argument('--output_path', help='The path where images will be stored.', default='output/')
+                        default='lj9me9')
+    parser.add_argument(
+        '--count', help='The number of images to scrape.', default='200')
+    parser.add_argument(
+        '--output_path', help='The path where images will be stored.', default='output/')
 
     args = parser.parse_args()
 

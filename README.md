@@ -1,9 +1,10 @@
 # Scraper for prnt.sc
 
 ## Introduction
-The website [LightShot or prnt.sc](https://prnt.sc/) is a public image sharing website which is most well known for its quick and easy 
+
+The website [LightShot or prnt.sc](https://prnt.sc/) is a public image sharing website which is most well known for its quick and easy
 downloadable sharing utility activated by pressing the PrtScn key. It's a very useful tool, however I noticed that it stores images
-based on a sequential 6 digit code, meaning the 1.3 billion or so images uploaded there can be indexed programmatically quite easily. 
+based on a sequential 6 digit code, meaning the 1.3 billion or so images uploaded there can be indexed programmatically quite easily.
 That is what this utility does.
 
 ## Pre-downloaded Dataset
@@ -20,6 +21,7 @@ This script was tested on the following python modules, however earlier/later ve
 - requests 2.8.1
 - beautifulsoup4 4.6.0
 - lxml 3.8.0
+- faker 8.11.0
 ```
 
 ## Using the Script
@@ -36,13 +38,13 @@ The script takes 3 arguments as follows:
 ## Uses/Explanation
 
 It can be very interesting to see what people upload to these sites, generally having sequential IDs of any type is bad, and the
-same applies here. People might not be aware that what they are uploading is visible to others, however prnt.sc/lightshot have 
+same applies here. People might not be aware that what they are uploading is visible to others, however prnt.sc/lightshot have
 not shown any inclination in wanting to change their site design.
 
 As a result, this provides a useful way to create datasets of real world images. A useful/interesting use case is building a machine
 learning algorithm to classify images into categories, which requires some manual classification, but is nonetheless interesting
 and a good learning task.
 
-# Licensing
- 
+## Licensing
+
 This project is released under the MIT license, see LICENSE.md for more details.

@@ -2,9 +2,9 @@ import argparse as parser
 import mimetypes
 import string
 from pathlib import Path
-
 import faker
 import requests
+# may require a 'pip install lxml' 
 from bs4 import BeautifulSoup
 
 mimetypes.add_type("image/webp", ".webp")
@@ -27,8 +27,9 @@ headers = {
 # The idea is that we can work in base 36 (length of all lowercase + digits) to add
 # one to a code i.e. if we have abcdef, we can essentially write abcdef + 1 to get
 # abcdeg, which is the next code.
-code_chars = list(string.ascii_lowercase) + \
-    ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+# order for prnt.sc appears to be numeric then alphabetic
+code_chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] + list(string.ascii_lowercase) 
+
 base = len(code_chars)
 
 # Converts digit to a letter based on character codes
@@ -75,14 +76,36 @@ def get_img(path):
 
 if __name__ == '__main__':
 
+    # --start_code is sequential, so from image context...
+    # 14akf6 ~ Oct 2013 
+    # 999997 ~ Jan 2015
+    # a9998j ~ Feb 2016
+    # h4akgb ~ Oct 2017
+    # sp2gna ~ May 2020 ;sp2nuo=2020-05-27;sp2v18=2020-05-27;sp2v7o=2020-05-28
+    # z4akga ~ Feb 2021
+    # 10000am ~ Feb 18, 2021; 100001g=2021-02-18;10000rt=2021-02-18-194850
     parser = parser.ArgumentParser()
-    parser.add_argument('--start_code', help='6 character string made up of lowercase letters and numbers which is '
-                                             'where the scraper will start. e.g. abcdef -> abcdeg -> abcdeh',
-                        default='lj9me9')
+    parser.add_argument('--start_code', 
+        help='6 or 7 character string made up of lowercase letters and numbers which is '
+            'where the scraper will start. e.g. abcdef -> abcdeg -> abcdeh',
+        default='10000rt')
+
+    # [TODO] add argument as an improvement, by getting the last modifed file 
+    #  if they allready exist in the output folder and starting one after that :)
+    # parser.add_argument(
+    #     '--resume_from_last', 
+    #     help='(PLANNED-Not yet implemented) If files allready exist in the output get last created/modified and resume from there (if --start_code < lastFile).',
+    #     default=True)
+
+    # Default is 9 billion, just go forever
     parser.add_argument(
-        '--count', help='The number of images to scrape.', default='200')
+        '--count', 
+        help='The number of images to scrape.', 
+        default='9000000000')
     parser.add_argument(
-        '--output_path', help='The path where images will be stored.', default='output/')
+        '--output_path', 
+        help='The path where images will be stored.', 
+        default='output/')
 
     args = parser.parse_args()
 

@@ -71,6 +71,7 @@ def get_img_url(code):
 # Saves image from URL
 def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
+    path = path.with_stem(path.stem.zfill(7))
     response.raise_for_status()
     with open(path.with_suffix(mimetypes.guess_extension(response.headers["content-type"])), 'wb') as f:
         f.write(response.content)

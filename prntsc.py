@@ -85,10 +85,10 @@ if __name__ == '__main__':
 
     # [TODO] add argument as an improvement, by getting the last modifed file
     #  if they allready exist in the output folder and starting one after that :)
-    # parser.add_argument(
-    #     '--resume_from_last',
-    #     help='(PLANNED-Not yet implemented) If files allready exist in the output get last created/modified and resume from there (if --start_code < lastFile).',
-    #     default=True)
+    parser.add_argument(
+        '--resume_from_last',
+        help='If files allready exist in the output get last created/modified and resume from there (if --start_code < lastFile).',
+        default=True)
 
     parser.add_argument(
         '--count',
@@ -100,12 +100,17 @@ if __name__ == '__main__':
         default='output/')
 
     args = parser.parse_args()
-
     output_path = Path(args.output_path)
     output_path.mkdir(exist_ok=True)
-    code = args.start_code
+
+    if(args.resume_from_last):
+        try:
+            code = max(output_path.iterdir(),
+                       key=lambda f: int(f.stem, base)).stem
+        except ValueError:
+            code = "0"
+    code = str_base(max(int(code, base)+1, int(args.start_code, base)), base)
     for i in range(int(args.count)):
-        code = next_code(code)
         try:
             get_img(output_path.joinpath(code))
             print(f"Saved image number {i}/{args.count} with code: {code}")
@@ -113,3 +118,4 @@ if __name__ == '__main__':
             break
         except Exception as e:
             print(f"{e} with image: {code}")
+        code = next_code(code)

@@ -4,6 +4,7 @@ import string
 from pathlib import Path
 import faker
 import requests
+from urllib.parse import urljoin
 # may require a 'pip install lxml'
 from bs4 import BeautifulSoup
 
@@ -64,7 +65,7 @@ def get_img_url(code):
     html = requests.get(f"http://prnt.sc/{code}", headers=headers).text
     soup = BeautifulSoup(html, 'lxml')
     img_url = soup.find_all('img', {'class': 'no-click screenshot-image'})
-    return img_url[0]['src']
+    return urljoin("https://",img_url[0]['src'])
 
 
 # Saves image from URL
@@ -83,8 +84,6 @@ if __name__ == '__main__':
                         'where the scraper will start. e.g. abcdef -> abcdeg -> abcdeh',
                         default='10000rt')
 
-    # [TODO] add argument as an improvement, by getting the last modifed file
-    #  if they allready exist in the output folder and starting one after that :)
     parser.add_argument(
         '--resume_from_last',
         help='If files allready exist in the output get last created/modified and resume from there (if --start_code < lastFile).',

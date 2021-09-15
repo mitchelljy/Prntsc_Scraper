@@ -29,19 +29,16 @@ headers = {
 # one to a code i.e. if we have abcdef, we can essentially write abcdef + 1 to get
 # abcdeg, which is the next code.
 # order for prnt.sc appears to be numeric then alphabetic
-code_chars = ["0", "1", "2", "3", "4", "5", "6",
-              "7", "8", "9"] + list(string.ascii_lowercase)
+code_chars = ["0", "1", "2", "3", "4", "5", "6", 
+              "7", "8", "9"] + list(string.ascii_lowercase) 
 
 base = len(code_chars)
 
 # Converts digit to a letter based on character codes
-
-
 def digit_to_char(digit):
     if digit < 10:
         return str(digit)
     return chr(ord('a') + digit - 10)
-
 
 # Returns the string representation of a number in a given base.
 # Credit: https://stackoverflow.com/a/2063535
@@ -52,7 +49,6 @@ def str_base(number, base):
     if d > 0:
         return str_base(d, base) + digit_to_char(m)
     return digit_to_char(m)
-
 
 # Returns the next code given the current code
 def next_code(curr_code):
@@ -67,48 +63,60 @@ def get_img_url(code):
     img_url = soup.find_all('img', {'class': 'no-click screenshot-image'})
     return urljoin("https://",img_url[0]['src'])
 
-
 # Saves image from URL
 def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
-    path = path.with_stem(path.stem.zfill(7))
     response.raise_for_status()
-    with open(path.with_suffix(mimetypes.guess_extension(response.headers["content-type"])), 'wb') as f:
-        f.write(response.content)
-
+    path = path.with_suffix(mimetypes.guess_extension(response.headers["content-type"]))
+    if path.is_file():
+        print(f'Skipping file {path}, as it allready exists')
+    else:
+        print(f'Writing file {path}')
+        with open(path,'wb') as f:
+            f.write(response.content)
 
 if __name__ == '__main__':
-
+    # --start_code is sequential, so from image context...
+    # 14akf6 ~ Oct 2013
+    # 999997 ~ Jan 2015
+    # a9998j ~ Feb 2016
+    # h4akgb ~ Oct 2017
+    # sp2gna ~ May 2020 ;sp2nuo=2020-05-27;sp2v18=2020-05-27;sp2v7o=2020-05-28
+    # z4akga ~ Feb 2021
+    # 10000am ~ Feb 18, 2021; 100001g=2021-02-18;10000rt=2021-02-18-194850
     parser = parser.ArgumentParser()
-    parser.add_argument('--start_code',
-                        help='6 or 7 character string made up of lowercase letters and numbers which is '
-                        'where the scraper will start. e.g. abcdef -> abcdeg -> abcdeh',
-                        default='10000rt')
+    parser.add_argument('--start_code', 
+        help='6 or 7 character string made up of lowercase letters and numbers which is '
+            'where the scraper will start. e.g. abcdef -> abcdeg -> abcdeh',
+        default='10000rt')
 
     parser.add_argument(
         '--resume_from_last',
         help='If files allready exist in the output get last created/modified and resume from there (if --start_code < lastFile).',
         default=True)
 
+    # Default is 9 billion, just go forever, or untill we are out of storage
     parser.add_argument(
-        '--count',
-        help='The number of images to scrape.',
-        default='200')
+        '--count', 
+        help='The number of images to scrape.', 
+        default='9000000000')
+
     parser.add_argument(
-        '--output_path',
-        help='The path where images will be stored.',
+        '--output_path', 
+        help='The path where images will be stored.', 
         default='output/')
 
     args = parser.parse_args()
+
     output_path = Path(args.output_path)
     output_path.mkdir(exist_ok=True)
-
+    code = args.start_code
     if(args.resume_from_last):
         try:
             code = max(output_path.iterdir(),
                        key=lambda f: int(f.stem, base)).stem
         except ValueError:
-            code = "0"
+            code = args.start_code
     code = str_base(max(int(code, base)+1, int(args.start_code, base)), base)
     for i in range(int(args.count)):
         try:

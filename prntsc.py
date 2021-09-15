@@ -4,7 +4,7 @@ import string
 from pathlib import Path
 import faker
 import requests
-# may require a 'pip install lxml' 
+# may require a 'pip install lxml'
 from bs4 import BeautifulSoup
 
 mimetypes.add_type("image/webp", ".webp")
@@ -33,13 +33,10 @@ code_chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] + list(string.as
 base = len(code_chars)
 
 # Converts digit to a letter based on character codes
-
-
 def digit_to_char(digit):
     if digit < 10:
         return str(digit)
     return chr(ord('a') + digit - 10)
-
 
 # Returns the string representation of a number in a given base.
 # Credit: https://stackoverflow.com/a/2063535
@@ -50,7 +47,6 @@ def str_base(number, base):
     if d > 0:
         return str_base(d, base) + digit_to_char(m)
     return digit_to_char(m)
-
 
 # Returns the next code given the current code
 def next_code(curr_code):
@@ -70,14 +66,17 @@ def get_img_url(code):
 def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
     response.raise_for_status()
-    with open(path.with_suffix(mimetypes.guess_extension(response.headers["content-type"])), 'wb') as f:
-        f.write(response.content)
-
+    destination_path = path.with_suffix(mimetypes.guess_extension(response.headers["content-type"]))
+    if path.with_suffix(mimetypes.guess_extension(response.headers["content-type"])).is_file():
+        print(f'Skipping file {destination_path}, as it allready exists')
+    else:
+        print(f'Writing file {destination_path}')
+        with open(path.with_suffix(mimetypes.guess_extension(response.headers["content-type"])),'wb') as f:
+            f.write(response.content)
 
 if __name__ == '__main__':
-
     # --start_code is sequential, so from image context...
-    # 14akf6 ~ Oct 2013 
+    # 14akf6 ~ Oct 2013
     # 999997 ~ Jan 2015
     # a9998j ~ Feb 2016
     # h4akgb ~ Oct 2017

@@ -68,7 +68,7 @@ def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
     ### zfill makes logical sense, but from some testing prnt.sc 
     ### does not resolve anything that begins with a 0
-    # path = path.with_stem(path.stem.zfill({LENGTH OF CODE(6 or 7)}))
+    # path = path.with_stem(path.stem.zfill(7))
     response.raise_for_status()
     path = path.with_suffix(mimetypes.guess_extension(response.headers["content-type"]))
     if path.is_file():
@@ -92,13 +92,13 @@ if __name__ == '__main__':
 
     # Default is 9 billion, just go forever, or untill we are out of storage
     parser.add_argument(
-        '--count', 
-        help='The number of images to scrape.', 
+        '--count',
+        help='The number of images to scrape.',
         default='9000000000')
 
     parser.add_argument(
-        '--output_path', 
-        help='The path where images will be stored.', 
+        '--output_path',
+        help='The path where images will be stored.',
         default='output/')
 
     args = parser.parse_args()

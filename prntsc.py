@@ -66,6 +66,9 @@ def get_img_url(code):
 # Saves image from URL
 def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
+    ### zfill makes logical sense, but from some testing prnt.sc 
+    ### does not resolve anything that begins with a 0
+    # path = path.with_stem(path.stem.zfill({LENGTH OF CODE(6 or 7)}))
     response.raise_for_status()
     path = path.with_suffix(mimetypes.guess_extension(response.headers["content-type"]))
     if path.is_file():
@@ -76,14 +79,6 @@ def get_img(path):
             f.write(response.content)
 
 if __name__ == '__main__':
-    # --start_code is sequential, so from image context...
-    # 14akf6 ~ Oct 2013
-    # 999997 ~ Jan 2015
-    # a9998j ~ Feb 2016
-    # h4akgb ~ Oct 2017
-    # sp2gna ~ May 2020 ;sp2nuo=2020-05-27;sp2v18=2020-05-27;sp2v7o=2020-05-28
-    # z4akga ~ Feb 2021
-    # 10000am ~ Feb 18, 2021; 100001g=2021-02-18;10000rt=2021-02-18-194850
     parser = parser.ArgumentParser()
     parser.add_argument('--start_code', 
         help='6 or 7 character string made up of lowercase letters and numbers which is '

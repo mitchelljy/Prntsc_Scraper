@@ -45,6 +45,17 @@ As a result, this provides a useful way to create datasets of real world images.
 learning algorithm to classify images into categories, which requires some manual classification, but is nonetheless interesting
 and a good learning task.
 
+### Sequential is a poor practice
+     --start_code values on prnt.cs is sequential, so from image context...
+     14akf6 ~ Oct 2013
+     999997 ~ Jan 2015
+     a9998j ~ Feb 2016
+     h4akgb ~ Oct 2017
+     sp2gna ~ May 2020 ;sp2nuo=2020-05-27;sp2v18=2020-05-27;sp2v7o=2020-05-28
+     z4akga ~ Feb 2021
+     10000am ~ Feb 18, 2021; 100001g=2021-02-18;10000rt=2021-02-18-194850
+     1qrrrav ~ Aug 30, 2021
+     
 ## Licensing
 
 This project is released under the MIT license, see LICENSE.md for more details.

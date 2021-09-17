@@ -29,13 +29,21 @@ This script was tested on the following python modules, however earlier/later ve
 The script takes 4 arguments as follows:
 
 * ```--start_code```: 6 or 7 character string made up of lowercase letters and numbers which is where the scraper will start.
-  * e.g. ```lj9me9```
+  * e.g. ```'lj9me9'```
 * ```--count```: The number of images to scrape.
-  * e.g. ```200```
+  * e.g. ```'200'```
 * ```--output_path```: The path where images will be stored.
-  * e.g. ```output/```
-* ```--resume_from_last ```:If files allready exist in the output get last created/modified and resume from there,default=True
+  * e.g. ```'output_001/```
+* ```--resume_from_last ```:If files allready exist in the output get last created/modified and resume from there, default=True
+  * e.g. ```True```
+* ```--max_files_per_destination ```:The maximum number of files to place in a directory prior to creating a new output directory, default='32766'
+  * e.g. ```'10000'```
 
+parser.add_argument(
+        '--max_files_per_destination',
+        help='The maximum number of files to place in a directory prior to creating a new output directory',
+        default='32766')
+        
   
 ## Uses/Explanation
 

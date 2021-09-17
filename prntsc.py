@@ -7,6 +7,7 @@ import requests
 from urllib.parse import urljoin
 # may require a 'pip install lxml'
 from bs4 import BeautifulSoup
+import os.path
 
 mimetypes.add_type("image/webp", ".webp")
 
@@ -68,7 +69,7 @@ def get_img(path):
     response = requests.get(get_img_url(path.stem), headers=headers)
     ### zfill makes logical sense, but from some testing prnt.sc 
     ### does not resolve anything that begins with a 0
-    # path = path.with_stem(path.stem.zfill(7))
+    # not used :: path = path.with_stem(path.stem.zfill(7))
     response.raise_for_status()
     path = path.with_suffix(mimetypes.guess_extension(response.headers["content-type"]))
     if path.is_file():
@@ -99,7 +100,12 @@ if __name__ == '__main__':
     parser.add_argument(
         '--output_path',
         help='The path where images will be stored.',
-        default='output/')
+        default='output_001/')
+
+    parser.add_argument(
+        '--max_files_per_destination',
+        help='The maximum number of files to place in a directory prior to creating a new output directory',
+        default='32766')
 
     args = parser.parse_args()
 
@@ -113,12 +119,24 @@ if __name__ == '__main__':
         except ValueError:
             code = args.start_code
     code = str_base(max(int(code, base)+1, int(args.start_code, base)), base)
+
+    # Scrape images untill --count is reached
     for i in range(int(args.count)):
         try:
+            # A fat32 file system can't have more than 32,766 file in a directory.
+            # so on a out of space error, check if the value is = to this value and if it is then create a new output directory
+            num_files = len([f for f in os.listdir(output_path)if os.path.isfile(os.path.join(output_path, f))])
+            if (num_files >= args.max_files_per_destination):
+               try:
+                   output_path = output_path[:-3] + next_code(output_path[-3:])
+               except Exception as e:
+                   print(f"{e} during increment output directory for {output_path}")
+
             get_img(output_path.joinpath(code))
             print(f"Saved image number {i}/{args.count} with code: {code}")
         except KeyboardInterrupt:
             break
         except Exception as e:
             print(f"{e} with image: {code}")
+
         code = next_code(code)

@@ -75,7 +75,7 @@ def get_img(path):
     if path.is_file():
         print(f'Skipping file {path}, as it allready exists')
     else:
-        print(f'Writing file {path}')
+        #print(f'Writing file {path}')
         with open(path,'wb') as f:
             f.write(response.content)
 
@@ -91,11 +91,11 @@ if __name__ == '__main__':
         help='If files allready exist in the output get last created/modified and resume from there (if --start_code < lastFile).',
         default=True)
 
-    # Default is 9 billion, just go forever, or untill we are out of storage
+    # set to something like 10 billion to just go forever, or untill we are out of storage
     parser.add_argument(
         '--count',
         help='The number of images to scrape.',
-        default='9000000000')
+        default='2000')
 
     parser.add_argument(
         '--output_path',

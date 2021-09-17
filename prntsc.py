@@ -79,6 +79,9 @@ def get_img(path):
         with open(path,'wb') as f:
             f.write(response.content)
 
+def get_num_files(path):
+    return len([f for f in os.listdir(path)if os.path.isfile(os.path.join(path, f))])
+
 if __name__ == '__main__':
     parser = parser.ArgumentParser()
     parser.add_argument('--start_code', 
@@ -109,6 +112,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+
+
     output_path = Path(args.output_path)
     output_path.mkdir(exist_ok=True)
     code = args.start_code
@@ -119,21 +124,18 @@ if __name__ == '__main__':
         except ValueError:
             code = args.start_code
     code = str_base(max(int(code, base)+1, int(args.start_code, base)), base)
-
+    num_files = get_num_files(output_path)
     # Scrape images untill --count is reached
     for i in range(int(args.count)):
         try:
-            # A fat32 file system can't have more than 32,766 file in a directory.
-            # so on a out of space error, check if the value is = to this value and if it is then create a new output directory
-            num_files = len([f for f in os.listdir(output_path)if os.path.isfile(os.path.join(output_path, f))])
-
-            #'>=' not supported between instances of 'int' and 'str' with image: 10048te
+            num_files+=1
             if (num_files >= int(args.max_files_per_destination)):
                try:
                    output_path = output_path[:-3] + next_code(output_path[-3:])
                except Exception as e:
                    print(f"{e} during increment output directory for {output_path}")
-
+                   # [TODO] A fat32 file system can't have more than 32,766 file in a directory.
+                   # so on a out of space error, check if the value is = to this value and if it is then create a new output directory
             get_img(output_path.joinpath(code))
             print(f"Saved image number {i}/{args.count} with code: {code}")
         except KeyboardInterrupt:

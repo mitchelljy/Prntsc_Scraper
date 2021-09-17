@@ -126,7 +126,9 @@ if __name__ == '__main__':
             # A fat32 file system can't have more than 32,766 file in a directory.
             # so on a out of space error, check if the value is = to this value and if it is then create a new output directory
             num_files = len([f for f in os.listdir(output_path)if os.path.isfile(os.path.join(output_path, f))])
-            if (num_files >= args.max_files_per_destination):
+
+            #'>=' not supported between instances of 'int' and 'str' with image: 10048te
+            if (num_files >= int(args.max_files_per_destination)):
                try:
                    output_path = output_path[:-3] + next_code(output_path[-3:])
                except Exception as e:

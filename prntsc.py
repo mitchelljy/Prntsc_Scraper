@@ -112,8 +112,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-
-
     output_path = Path(args.output_path)
     output_path.mkdir(exist_ok=True)
     code = args.start_code
@@ -125,19 +123,25 @@ if __name__ == '__main__':
             code = args.start_code
     code = str_base(max(int(code, base)+1, int(args.start_code, base)), base)
     num_files = get_num_files(output_path)
+    print(f"Starting with directory file count of {num_files}")
     # Scrape images untill --count is reached
     for i in range(int(args.count)):
         try:
             num_files+=1
-            if (num_files >= int(args.max_files_per_destination)):
+            if (num_files >= (int(args.max_files_per_destination)-1)):
                try:
-                   output_path = output_path[:-3] + next_code(output_path[-3:])
+                   output_path_temp_prefix = str(output_path)[:-3] 
+                   output_path_temp_sufix = next_code(str(output_path)[-3:]).zfill(3)
+                   output_path = Path(output_path_temp_prefix + output_path_temp_sufix)
+                   output_path.mkdir(exist_ok=True)
+                   num_files = 1
                except Exception as e:
                    print(f"{e} during increment output directory for {output_path}")
-                   # [TODO] A fat32 file system can't have more than 32,766 file in a directory.
-                   # so on a out of space error, check if the value is = to this value and if it is then create a new output directory
+
             get_img(output_path.joinpath(code))
-            print(f"Saved image number {i}/{args.count} with code: {code}")
+            print(f"Saved image number {i}/{args.count} with code: {code} \tcurrent directory file count is expected to be:{num_files}")
+            print(f"DEBUG:{(num_files >= (int(args.max_files_per_destination)-1))}")
+            print(f"DEBUG:{str(output_path)[:-3] + next_code(str(output_path)[-3:]).zfill(3)}")
         except KeyboardInterrupt:
             break
         except Exception as e:

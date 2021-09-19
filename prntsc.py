@@ -140,8 +140,8 @@ if __name__ == '__main__':
 
             get_img(output_path.joinpath(code))
             print(f"Saved image number {i}/{args.count} with code: {code} \tcurrent directory file count is expected to be:{num_files}")
-            print(f"DEBUG:{(num_files >= (int(args.max_files_per_destination)-1))}")
-            print(f"DEBUG:{str(output_path)[:-3] + next_code(str(output_path)[-3:]).zfill(3)}")
+            # print(f"DEBUG:Expected number of files: {(num_files >= (int(args.max_files_per_destination)-1))}")
+            # print(f"DEBUG:Next output path {str(output_path)[:-3] + next_code(str(output_path)[-3:]).zfill(3)}")
         except KeyboardInterrupt:
             break
         except Exception as e:
